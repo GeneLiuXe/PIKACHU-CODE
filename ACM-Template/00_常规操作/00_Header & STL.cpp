@@ -96,32 +96,28 @@ int n; read(n); wirte(n); printf("\n");
 /*------------------------------------------------------------*/
 
 /*__int128快速读入、输出*/
-//读入
-inline char nc() { 
-  static char buf[100000], *p1 = buf, *p2 = buf; 
-  return p1 == p2 && (p2 = (p1 = buf) + fread(buf, 1, 100000, stdin), p1 == p2) ? EOF : *p1++; 
-} 
-template <typename T> bool rn(T& v) { 
-  static char ch; 
-  while (ch != EOF && !isdigit(ch)) ch = nc(); 
-  if (ch == EOF) return false; 
-  for (v = 0; isdigit(ch); ch = nc()) v = v * 10 + ch - '0'; 
-  return true; 
-}
-//输出
-template <typename T> void o(T p) {
-    static int stk[70], tp;
-    if (p == 0) {
-        putchar('0');
-        return;
+inline __int128 read() {
+    __int128 x=0,f=1;
+    char ch=getchar();
+    while(ch<'0'||ch>'9') {
+        if(ch=='-') f=-1;
+        ch=getchar();
     }
-    if (p < 0) {
-        p = -p;
-        putchar('-');
+    while(ch>='0'&&ch<='9') {
+        x=x*10+ch-'0';
+        ch=getchar();
     }
-    while (p) stk[++tp] = p % 10, p /= 10;
-    while (tp) putchar(stk[tp--] + '0');
+    return x*f;
 }
+
+inline void write(__int128 x) {
+    if(x<0) { putchar('-'); x=-x; }
+    if(x>9) write(x/10);
+    putchar(x%10+'0');
+}
+
+example = read();
+write(example);
 /*------------------------------------------------------------*/
 
 /*离散化*/
@@ -185,8 +181,28 @@ void FLoat_Mod(long double a, long double b){
   std::unordered_map<int,int> tmp; mp.swap(tmp); //设置一个空的map用于交换，即mp.clear()
   mp.reserve(1000); //预留map中元素个数
   mp.rehash(1000); //给元素个数预留足够的bucket用于hash
+  /* unordered_map 操作 */
+  #include <unordered_map>
+  struct Node {
+    int x, y;
+    bool operator == (const Node &t) const {
+      return  x==t.x && y==t.y;
+    }
+  };
+  struct NodeHash {
+    std::size_t operator () (const Node &t) const {
+      return t.x * 100 + t.y;
+    }
+  };
+  unordered_map<Node, string, NodeHash> h_map;
+  h_map[(Node){1,2}] = "World";
+  /* unordered_set */
+  #include <unordered_set>
+  unordered_set<Node, NodeHash> h_set;
+  h_set.insert((Node){1,2});
+  if(h_set.find((Node){1,2} == h_set.end()) printf("Not found!\n");
+  else printf("Found!");  
 /*------------------------------------------------------------*/
-
 
 /*string函数*/
   /* 数字转字符串 */
@@ -206,6 +222,25 @@ void FLoat_Mod(long double a, long double b){
   s += "aaaa";
 /*------------------------------------------------------------*/
 
+/*位运算*/
+  /*unsigned int x*/
+  x = 433 -> 110110001
+  /*计算 x 的二进制中有多少个 1*/
+  __builtin_popcount(x) -> 5
+  /*判断 x 的二进制中 1 的个数的奇偶性*/
+  __builtin_parity(x) -> 1
+  /*计算 n 的二进制末尾最后一个 1 的位置，位置编号从 1 开始*/
+  __builtin_ffs(x) -> 1 
+  /*计算 n 的二进制末尾连续 0 的个数*/
+  __builtin_ctz(x) -> 0 
+  /*返回前导 0 的个数*/
+  __builtin_clz(x) -> 23 = 32 - 9
+  /*计算 n 的二进制开头第一个 1 的位置，位置编号从 1 开始*/
+  32 - __builtin_clz(x) = 9
+  /*在函数名末尾添加 ll 使参数类型变为 unsigned long long*/
+  __builtin_clzll(x) -> 55
+  /*注意：上述均为内建函数，经过了编译器的高度优化，运行速度十分快*/
+/*------------------------------------------------------------*/
 
 /*bitset函数*/
   /* 声明 */
@@ -261,6 +296,9 @@ void FLoat_Mod(long double a, long double b){
   /* resize() 和 reserve() 函数 */
   v.reserve(100);  //改变了vector的capacity，但是没有改变其空间大小
   v.resize(100);   //同时改变了vector的capacity和size，且原有元素不会被覆盖
+  /* vector 去重 */
+  sort(v.begin(),v.end());
+  v.erase(unique(v.begin(),v.end()),v.end());
 /*-------------------------------------------------------------------*/
 
 

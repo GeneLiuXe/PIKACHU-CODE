@@ -52,8 +52,6 @@ bool bfs()
 		{
 			if(e[i].v && !dis[e[i].to]){
 				q.push(e[i].to);
-
-
 				dis[e[i].to] = dis[x]+1;
 				if(e[i].to == t) return 1;  //找到一条路就return 
 			}

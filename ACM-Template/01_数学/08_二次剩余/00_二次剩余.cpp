@@ -1,3 +1,8 @@
+// ---
+// 若 $x^2\equiv n\% p$, 则 n 是模 p 的二次剩余。
+// \\
+// 若 p 是奇质数, 且 $n^{\frac{p-1}{2}}\% p=1$, 则 n 是模 p 的二次剩余。
+// ---
 #include <bits/stdc++.h>
 #define __ ios::sync_with_stdio(0);cin.tie(0);cout.tie(0)
 #define rep(i,a,b) for(int i = a; i <= b; i++)
