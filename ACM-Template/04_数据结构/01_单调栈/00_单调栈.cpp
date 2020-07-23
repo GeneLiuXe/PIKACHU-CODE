@@ -24,8 +24,7 @@ int n,a[N],tt1[N],tt2[N];
 ll sum[N];
 stack<int> st;
 
-int main()
-{
+int main(){
 	scanf("%d",&n);
 	rep(i,1,n) scanf("%d",&a[i]);
 	rep(i,1,n) tt1[i] = 0, tt2[i] = n+1;
