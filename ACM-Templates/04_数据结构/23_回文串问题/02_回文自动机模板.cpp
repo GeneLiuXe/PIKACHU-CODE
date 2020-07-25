@@ -76,3 +76,59 @@ struct PAM{
 		per(i,tot-1,0) cnt[fail[i]] += cnt[i];
 	}
 }pam;
+
+// Fail[i] 失配指针。像AC自动机差不多的失配指针，这个指向的是同样回文串结尾的最长回文串。\\
+// len[i] 当前回文串的长度。 \\
+// num[i]  代表 i 这个节点所代表的回文串中的回文后缀个数;\\
+// cnt[i]  代表 i 这个节点所代表的回文串一共出现了多少次。 这个最后要 $count()$ 一下。\\
+
+// sz 节点个数代表本质不同的回文串的个数。\\
+
+// 每个回文串的长度还有出现的次数.\\
+
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 3e5+100;
+char s[N];
+namespace PAM {
+    int sz, fl[N], len[N], ch[N][26], num[N], cnt[N],now,n;
+    long long ans = 0;    
+    char *s;
+    int find(int x, int y) {
+        return s[y] == s[y - len[x] - 1] ? x : find(fl[x], y);
+    }
+    void init(char *str){
+        memset(ch, 0, sizeof(ch));
+        memset(fl, 0, sizeof(fl));
+        memset(cnt, 0, sizeof cnt);
+        memset(num, 0, sizeof num);  //多组数据的时候别忘记 清零.
+        s = str; now = 0;
+        n = strlen(s + 1);    //字符串从　１　开始．　
+        sz = 1;  fl[0] = 1;  
+        len[0] = 0;   len[1] = -1;
+    }
+    void cal() {
+        for (int i = 1; i <= n; i++) {
+            now = find(now, i);
+            if (!ch[now][s[i] - 'a']) {
+                len[++sz] = len[now] + 2;
+                fl[sz] = ch[find(fl[now], i)][s[i] - 'a'];
+                ch[now][s[i] - 'a'] = sz;
+                num[sz] = num[fl[sz]] + 1;
+            }
+            now = ch[now][s[i] - 'a'];
+            cnt[now]++;
+        }
+        for (int i = sz; i > 1; --i) {
+            cnt[fl[i]] += cnt[i];
+            ans = max(ans,1ll*cnt[i]*len[i]);
+        }
+    }
+};
+int main(){
+    scanf("%s",s+1);
+    PAM::init(s);
+    PAM::cal();
+    printf("%lld\n",PAM::ans);
+    return 0;
+}
