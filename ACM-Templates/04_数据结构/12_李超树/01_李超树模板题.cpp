@@ -9,22 +9,23 @@
 #define rep(i,a,b) for(int i = a; i <= b; i++)
 typedef long long ll;
 typedef double db;
+typedef double R;
 const int N = 5*1e4+100;
 const int M = 1e5+100;
 const db EPS = 1e-12;
 using namespace std;
 
 struct line{
-	db k,b;
-	int l,r,flag;
+	R k,b; // y = kx+b
+	int l,r,flag; // 线段 x 范围: [l, r]
 	line() {}
-	line(db a1,db a2,int l1,int r1,int f1) : k(a1),b(a2),l(l1),r(r1),flag(f1) {}
+	line(R a1,db a2,int l1,int r1,int f1) : k(a1),b(a2),l(l1),r(r1),flag(f1) {}
 }sgt[2*N];
 int n;
 
 inline int get_id(int l,int r) {return (l+r)|(l!=r);}
 //计算某条线段在某一个横坐标的纵坐标值
-inline db calc(line a,int pos) {return a.k*pos+a.b;}
+inline R calc(line a,int pos) {return a.k*pos+a.b;}
 
 void modify(int l,int r,line k){
 	int now = get_id(l,r);
@@ -46,12 +47,17 @@ void modify(int l,int r,line k){
 	} 
 }
 
-db query(int l,int r,int x){
+R query(int l,int r,int x){
 	int now = get_id(l,r);
-	if(l == r) return calc(sgt[now],x);
+	if(l == r) {
+		if(!sgt[now].flag) return 0; // 没有线段
+		return calc(sgt[now],x);
+	}
 	else{
 		int mid = (l+r)>>1;
-		db ans = calc(sgt[now],x);
+		R ans = 0;
+		// 当前区间有优势线段才更新答案
+		if(sgt[now].flag) ans = calc(sgt[now], x);
 		if(x <= mid) return max(ans,query(l,mid,x));
 		else return max(ans,query(mid+1,r,x));
 	}
