@@ -66,3 +66,74 @@ int main()
 	}
 	return 0;
 }
+
+
+// ---
+// 题意：\\
+// 每个点的度数都是偶数，每次删边的两个顶点读书不能同时是奇数，问最多能删多少边 \\
+// \\
+// 思路：\\
+// 对于每个连通图， 删除的边肯定就是 $m - 1$ 了， 所以就是把欧拉图跑出来，然后顺序删边，只留下最后一条边就行了。 \\
+// 这个题目的欧拉图，栈里面记录的是边，每个边只走一次，dfs 的时候也优化了一下，\\
+// ---
+
+#include<bits/stdc++.h>
+using namespace std;
+const int N = 5e5+100;
+typedef pair<int,int>P;
+P f[N];
+vector<int>g;
+vector<P>e[N];
+bool used[N], vis[N];
+int n,m,ans[N],cnt,now[N];
+
+void dfs(int u){
+    used[u] = 1;
+    while(now[u] < (int)e[u].size()){
+        auto it = e[u][now[u]];
+        int v = it.first, id = it.second;
+        now[u]++;   // 这个记录的是每个顶点走到什么地方了。 
+        if (vis[id]) continue;
+        vis[id] = 1;   // 把边置反。
+        dfs(v);
+        ans[++cnt] = id;  // 把边放到栈里面。 
+    }
+} 
+int cal(int x, int y){  // 这个是算下一个顶点。 因为栈里面存的是边。 
+    return f[y].first ^ f[y].second ^ x;
+}
+int main(){
+    int x,y;
+    scanf("%d%d",&n,&m);
+    for (int i = 1; i <= m; ++i){
+        scanf("%d%d",&x,&y);
+        e[x].push_back(P(y, i));
+        e[y].push_back(P(x, i));
+        f[i] = P(x,y);
+    }
+    for (int i = 1; i <= n; ++i){
+        if (!e[i].size()) continue;
+        if(!used[i]){
+            cnt = 0;
+            dfs(i);
+            int now = i, nxt = cal(i, ans[1]);
+            g.push_back(ans[1]);
+            for (int j = 2; j < cnt; ++j){  // 最后一条边不能删，
+                if (cal(nxt, ans[j]) == now){  // 如果回到原点，要特判，边只能走一次，但是点可以走多次。
+                    g.push_back(ans[j+1]);   // 这个时候 当前点 和 原点 的度数都是奇数，不能删，所以删 j+1， 然后回来删 j 。
+                    g.push_back(ans[j]);
+                    nxt = cal(now, ans[j+1]);
+                    j++;
+                } else {
+                    g.push_back(ans[j]);
+                    nxt = cal(nxt, ans[j]);
+                }
+            }
+        }
+    }
+    int sz = g.size();
+    printf("%d\n",sz);
+    for (int i = 0; i < sz; ++i)
+        printf("%d ", g[i]);
+    return 0;
+}
