@@ -23,7 +23,7 @@ struct flow {
 		for(int i = 0; i <= mx; i++) v[i].clear();
 	}
 
-	inline void add(int x, int y, int flow) {
+	inline void add(int x, int y, R flow) {
 		e.emplace_back(x, y, flow);
 		e.emplace_back(y, x, 0);
 		v[x].emplace_back(e.size()-2);
