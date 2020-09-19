@@ -25,7 +25,8 @@ struct Node { int l,r,ls,rs,sum,lazy;} t[2*N];
 int n,m,root,rt,mod,val[N],head[N],tot,fa[N],d[N],son[N],size[N],top[N],id[N],rk[N];
 //top[x]: x节点所在链的顶端节点, id[x]: 节点dfs序, rk[x]: dfs序对应的节点
 //val[x]: 每个点初始权值, fa[x]: 每个点父节点, d[x]: 节点深度, size[x]: 节点子树大小
-//rt: 线段树根节点编号
+//rt: 线段树根节点编号 
+// son 重儿子的节点编号， 多组数据的时候不要忘记清空了。
 void init(){
 	memset(head,0,sizeof head);
 	tot = 1, size[0] = 0;
